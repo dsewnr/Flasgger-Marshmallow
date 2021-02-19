@@ -81,11 +81,14 @@ def swagger_decorator(
                 values_real_types = list(set(FIELDS_JSON_TYPE_MAP) & set(value.__class__.__mro__))
                 values_real_types.sort(key=value.__class__.__mro__.index)
                 if not values_real_types:
-                    raise '不支持的%s类型' % str(type(value))
+                    #  raise '不支持的%s类型' % str(type(value))
+                    value_type = 'string'
+                else:
+                    value_type = FIELDS_JSON_TYPE_MAP.get(values_real_types[0])
                 tmp = {
                     'in': location,
                     'name': getattr(value, 'data_key', None) or key,
-                    'type': FIELDS_JSON_TYPE_MAP.get(values_real_types[0]),
+                    'type': value_type,
                     'required': value.required if location != 'path' else True,
                     'description': value.metadata.get('doc', '')
                 }
@@ -128,9 +131,12 @@ def swagger_decorator(
                     values_real_types = list(set(FIELDS_JSON_TYPE_MAP) & set(value.__class__.__mro__))
                     values_real_types.sort(key=value.__class__.__mro__.index)
                     if not values_real_types:
-                        raise '不支持的%s类型' % str(type(value))
+                        #  raise '不支持的%s类型' % str(type(value))
+                        value_type = 'string'
+                    else:
+                        value_type = FIELDS_JSON_TYPE_MAP.get(values_real_types[0])
                     tmp[key] = {
-                        'type': FIELDS_JSON_TYPE_MAP.get(values_real_types[0]),
+                        'type': value_type,
                         'description': value.metadata.get('doc', ''),
                         'required': value.required,
                     }
